@@ -1,19 +1,6 @@
 from dash import Dash, html,dcc,Input,Output,callback
-from mysql.connector import connect
 from PIL import Image
 import base64
-
-#connect to mysql databases
-conn=connect(
-    host='localhost',
-    user='root',
-    password='chatme@2023',
-    database='mydb')
-
-#query the images table
-cursor=conn.cursor()
-cursor.execute('SELECT * FROM images')
-images=cursor.fetchall
 
 
 #using direct image file path
@@ -37,7 +24,7 @@ app.layout=html.Div([html.H1("MY DASH APP",style={'text-align':'center','color':
                      html.Img(src=image_path),
                      html.Img(src=app.get_asset_url('my_image.png')),
                      html.Img(src=pil_img),
-                     html.Img(src=b64_image(image_path)),
+                    
                      html.Br(),
                      html.Br(),
                      html.Div([
@@ -63,14 +50,13 @@ app.layout=html.Div([html.H1("MY DASH APP",style={'text-align':'center','color':
                          html.Div(id='container')
                      ])
 ])
-
 @callback(
-    Output(component_id='container',component_property='children'),
-    Input(component_id='feature_one',component_property='value'),
-    Input(component_id='feature_two',component_property='value'),
-    Input(component_id='feature_three',component_property='value'),
-
-    
+    Output('container', 'children'),
+    [Input('feature_one', 'value'),
+     Input('feature_two', 'value'),
+     Input('feature_three', 'value'),
+     Input('save-button', 'n_clicks')
+           ]
 )
 def update_inputs(selected_value1):
     print(selected_value1)
